@@ -8,7 +8,7 @@ import {
   ScrollView,
   Image,
 } from "react-native";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesome, Feather } from "@expo/vector-icons";
 import {
   useFonts,
@@ -18,6 +18,7 @@ import {
   Nunito_700Bold,
 } from "@expo-google-fonts/dev";
 import moment from "moment";
+import * as Icons from "./assets/svg";
 
 Text.defaultProps = Text.defaultProps || {};
 Text.defaultProps.allowFontScaling = false;
@@ -212,10 +213,22 @@ export default function App() {
                   }}
                 >
                   <Text>{item.temp_c.toFixed(1)}°C</Text>
-                  <Image
+                  {/* <Image
                     source={{ uri: "https:" + item.condition.icon }}
                     style={{ width: 80, height: 80 }}
-                  ></Image>
+                  ></Image> */}
+                  {(() => {
+                    const icon =
+                      iconMap[
+                        iconMap.findIndex((i) => item.condition.code === i.code)
+                      ][item.is_day ? "dayIcon" : "nightIcon"];
+                    //convert icon name to camel case
+                    const iconName = icon.replace(/-([a-z])/g, (g) =>
+                      g[1].toUpperCase()
+                    );
+                    const Icon = Icons[iconName];
+                    return <Icon width="64" height="64" />;
+                  })()}
                   <Text>{moment(item.time_epoch * 1000).format("HH:mm")}</Text>
                 </View>
               ))}
